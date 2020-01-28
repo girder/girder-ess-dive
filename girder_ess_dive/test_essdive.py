@@ -1,14 +1,12 @@
 # Test ESS-DIVE data creation
 import unittest
-import requests, json
 
 from .assetstore import get_essdive_filelist, get_essdive_metadata
 
 
 class TestESSDive(unittest.TestCase):
-    
-    baseurl = "https://data.ess-dive.lbl.gov"
 
+    baseurl = "https://data.ess-dive.lbl.gov"
 
     def test_essdiveid_to_files(self):
         essdiveid = "ess-dive-2f8202e4c0f5ffa-20190215T222733727"
@@ -31,8 +29,11 @@ class TestESSDive(unittest.TestCase):
         essdiveid = "ess-dive-461f57d68cd162f-20190301T155146455234"
         metadata = get_essdive_metadata(self.baseurl, essdiveid)
 
-        bbox = metadata['eml:eml']['dataset']['coverage']['geographicCoverage']['boundingCoordinates']
-        self.assertEqual(bbox['northBoundingCoordinate'], '39.034')
+        bbox = metadata["eml:eml"]["dataset"]["coverage"]["geographicCoverage"][
+            "boundingCoordinates"
+        ]
+        self.assertEqual(bbox["northBoundingCoordinate"], "39.034")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

@@ -18,7 +18,7 @@
 ###############################################################################
 
 from girder import events
-from girder.api.v1.assetstore import Assetstore
+from girder.plugin import GirderPlugin
 from girder.constants import AssetstoreType
 from girder.utility.assetstore_utilities import setAssetstoreAdapter
 
@@ -27,18 +27,19 @@ from .rest import EssDiveAssetstore
 
 
 def updateAssetstore(event):
-    params = event.info['params']
-    assetstore = event.info['assetstore']
+    params = event.info["params"]
+    assetstore = event.info["assetstore"]
 
-    if assetstore['type'] == AssetstoreType.ESSDIVE:
-        assetstore['essdive'] = {
-            'url': params.get('url', assetstore['essdive']['url'])
-        }
+    if assetstore["type"] == AssetstoreType.ESSDIVE:
+        assetstore["essdive"] = {"url": params.get("url", assetstore["essdive"]["url"])}
 
-def load(info):
 
-    AssetstoreType.ESSDIVE = 'essdive'
-    setAssetstoreAdapter(AssetstoreType.ESSDIVE, EssDiveAssetstoreAdapter)
-    events.bind('assetstore.update', 'essdive', updateAssetstore)
+class GirderESSDive(GirderPlugin):
+    DISPLAY_NAME = "Ess Dive"
 
-    info['apiRoot'].essdive_assetstores = EssDiveAssetstore()
+    def load(self, info):
+        AssetstoreType.ESSDIVE = "essdive"
+        setAssetstoreAdapter(AssetstoreType.ESSDIVE, EssDiveAssetstoreAdapter)
+        events.bind("assetstore.update", "essdive", updateAssetstore)
+
+        info["apiRoot"].essdive_assetstores = EssDiveAssetstore()

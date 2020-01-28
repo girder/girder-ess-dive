@@ -1,5 +1,0 @@
-pytest
-requests
-xmltodict
-shapely
-pyproj

@@ -4,7 +4,8 @@ Plugin implementing ESS-DIVE assetstore in Girder
 
 ## Install
 
-Copy this directory into girder plugins dir
+* Clone this repository
+* `pip install -e .`
 
 ## Usage
 
@@ -16,7 +17,7 @@ POST /essdive_assetstores
 
 Params:
 name - Name of the Assetstore
-url - The base URL for the ESS-DIVE 
+url - The base URL for the ESS-DIVE
 ```
 
 ### Import existing data into an assetstore.
