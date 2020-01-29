@@ -3,9 +3,20 @@
 Plugin implementing ESS-DIVE assetstore in Girder
 
 ## Install
+Through PyPI:
 
-* Clone this repository
-* `pip install -e .`
+```
+pip install girder-ess-dive
+```
+
+Locally:
+
+```
+git clone https://github.com/girder/girder-ess-dive.git
+cd girder-ess-dive
+pip install .
+```
+
 
 ## Usage
 
