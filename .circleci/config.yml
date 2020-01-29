@@ -11,20 +11,40 @@ jobs:
       - run:
           name: "Run Pytest tests"
           command: pytest
-  # release:
-  #   docker:
-  #     - image: circleci/python
-  #   steps:
-  #     -
+
+  test_release:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - run: pip install twine
+      - run: python setup.py sdist
+      - run: twine upload --repository-url https://test.pypi.org/legacy/ dist/* -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD}
+
+  release:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - run: pip install twine
+      - run: python setup.py sdist
+      - run: twine upload dist/* -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD}
 
 workflows:
   version: 2
   test_and_publish:
     jobs:
       - test_python
-      # - release:
-      #     requires:
-      #       - test_python
-      #     filters:
-      #       branches:
-      #         only: master
+      - test_release:
+          requires:
+            - test_python
+          filters:
+            branches:
+              only: master
+      - release:
+          requires:
+            - test_python
+            - test_release
+          filters:
+            branches:
+              only: master
