@@ -8,6 +8,7 @@ jobs:
       - image: qnib/pytest
     steps:
       - checkout
+      - run: pip install .
       - run:
           name: "Run Pytest tests"
           command: pytest
