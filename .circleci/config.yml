@@ -1,21 +1,19 @@
 version: 2.1
-orbs:
-  pytest: thekevjames/pytest@0.0.60
 
 jobs:
   test_python:
     docker:
-      - image: qnib/pytest
+      - image: circleci/python:3.5
     steps:
       - checkout
-      - run: pip install .
+      - run: pip install . pytest
       - run:
           name: "Run Pytest tests"
           command: pytest
 
   test_release:
     docker:
-      - image: circleci/python
+      - image: circleci/python:3.5
     steps:
       - checkout
       - run: pip install twine
@@ -24,7 +22,7 @@ jobs:
 
   release:
     docker:
-      - image: circleci/python
+      - image: circleci/python:3.5
     steps:
       - checkout
       - run: pip install twine
