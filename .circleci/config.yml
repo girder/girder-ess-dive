@@ -1,31 +1,44 @@
 version: 2.1
-orbs:
-  pytest: thekevjames/pytest@0.0.60
 
 jobs:
   test_python:
     docker:
-      - image: qnib/pytest
+      - image: circleci/python:3.5
     steps:
       - checkout
-      - run: pip install .
+      - run:
+          name: Install test dependencies
+          command: pip install . pytest
       - run:
           name: "Run Pytest tests"
           command: pytest
-  # release:
-  #   docker:
-  #     - image: circleci/python
-  #   steps:
-  #     -
+
+  test_publish:
+    docker:
+      - image: circleci/python:3.5
+    steps:
+      - checkout
+      - run: pip install twine
+      - run: python setup.py sdist
+      - run: twine upload --repository-url https://test.pypi.org/legacy/ dist/* -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD}
+
+  publish:
+    docker:
+      - image: circleci/python:3.5
+    steps:
+      - checkout
+      - run: pip install twine
+      - run: python setup.py sdist
+      - run: twine upload dist/* -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD}
 
 workflows:
   version: 2
   test_and_publish:
     jobs:
       - test_python
-      # - release:
-      #     requires:
-      #       - test_python
-      #     filters:
-      #       branches:
-      #         only: master
+      - publish:
+          requires:
+            - test_python
+          filters:
+            branches:
+              only: master
