@@ -1,0 +1,30 @@
+version: 2.1
+orbs:
+  pytest: thekevjames/pytest@0.0.60
+
+jobs:
+  test_python:
+    docker:
+      - image: qnib/pytest
+    steps:
+      - checkout
+      - run:
+          name: "Run Pytest tests"
+          command: pytest
+  # release:
+  #   docker:
+  #     - image: circleci/python
+  #   steps:
+  #     -
+
+workflows:
+  version: 2
+  test_and_publish:
+    jobs:
+      - test_python
+      # - release:
+      #     requires:
+      #       - test_python
+      #     filters:
+      #       branches:
+      #         only: master
