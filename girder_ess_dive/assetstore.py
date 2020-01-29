@@ -24,6 +24,7 @@ import xmltodict
 
 from girder.exceptions import ValidationException
 from girder.utility.abstract_assetstore_adapter import AbstractAssetstoreAdapter
+from girder.utility.model_importer import ModelImporter
 
 from .constants import ESS_DIVE_QUERY_URL, ESS_DIVE_OBJECT_URL
 from .constants import BUF_LEN
@@ -130,19 +131,24 @@ class EssDiveAssetstoreAdapter(AbstractAssetstoreAdapter):
             )
         except KeyError:
             bounds = None
+        except TypeError:
+            bounds = None
+
+        itemModel = ModelImporter.model("item")
+        fileModel = ModelImporter.model("file")
 
         for f in file_objs:
             name = f["fileName"]
             size = int(f["size"])
             mimeType = f["formatId"]
-            item = self.model("item").createItem(
+            item = itemModel.createItem(
                 name=name, creator=user, folder=parent, reuseExisting=True
             )
             if bounds:
                 item["geometa"] = {"bounds": bounds}
-                self.model("item").save(item)
+                itemModel.save(item)
 
-            file = self.model("file").createFile(
+            file = fileModel.createFile(
                 name=name,
                 creator=user,
                 item=item,
@@ -157,7 +163,7 @@ class EssDiveAssetstoreAdapter(AbstractAssetstoreAdapter):
             file["dataset_id"] = ess_dive_id
             file["rightsHolder"] = f["rightsHolder"]
 
-            self.model("file").save(file)
+            fileModel.save(file)
 
     def importData(self, parent, parentType, params, progress, user, **kwargs):
         ess_dive_id = params.get("importPath", "").strip()
