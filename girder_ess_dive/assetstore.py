@@ -138,7 +138,7 @@ class EssDiveAssetstoreAdapter(AbstractAssetstoreAdapter):
         fileModel = ModelImporter.model("file")
 
         for f in file_objs:
-            name = f["fileName"]
+            name = "ESS-DIVE:" + f["fileName"]
             size = int(f["size"])
             mimeType = f["formatId"]
             item = itemModel.createItem(
