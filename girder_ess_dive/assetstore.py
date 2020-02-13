@@ -144,9 +144,22 @@ class EssDiveAssetstoreAdapter(AbstractAssetstoreAdapter):
             item = itemModel.createItem(
                 name=name, creator=user, folder=parent, reuseExisting=True
             )
+
+            if "meta" not in item["meta"]:
+                item["meta"]["meta"] = {}
+
+            metaName = item["meta"]["meta"].get("name") or f["fileName"]
+            item["meta"]["meta"]["name"] = "ESS-DIVE:" + metaName
+
             if bounds:
                 item["geometa"] = {"bounds": bounds}
-                itemModel.save(item)
+                bbox = bounds["coordinates"][0][:-1]
+                centerX = sum([p[0] for p in bbox]) / len(bbox)
+                centerY = sum([p[1] for p in bbox]) / len(bbox)
+
+                item["meta"]["meta"].update({"latitude": centerY, "longitude": centerX})
+
+            itemModel.save(item)
 
             file = fileModel.createFile(
                 name=name,
